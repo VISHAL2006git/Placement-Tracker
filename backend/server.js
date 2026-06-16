@@ -1,5 +1,7 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
+const Application = require('./models/Application');
 const PORT = 5000;
 app.use(express.json());
 
@@ -7,21 +9,37 @@ let applications =[];
 
 let nextApplicationId = 1;
 
-app.post("/applications",(req,res)=>{
-    const application = {
-        applicationID:nextApplicationId++,
-        ...req.body
-    };
-    applications.push(application);
-
-    res.json({
-        message:"Application created successfully",
-        application:application
-    });
+mongoose.connect('mongodb://localhost:27017/placementDB')
+.then(()=>{
+    console.log("MongoDB connected successfully");
+})
+.catch((err)=>{
+    console.log(err);
 });
 
-app.get('/applications',(req,res) =>{
-    res.json(applications);
+app.post("/applications", async (req,res)=>{
+    try{
+    const application = await Application.create(req.body);
+    res.status(201).json(application);
+    }
+    catch(err){
+        res.status(500).json({
+            message: err.message
+        });
+    }
+});
+
+app.get('/applications', async (req,res) =>{
+    try{
+        const applications = await Application.find();
+        res.json(applications);
+    }
+    catch(err){
+        res.status(500).json({
+            message: err.message
+        });
+    }
+    
 });
 
 app.put('/applications/:id',(req,res) => {
