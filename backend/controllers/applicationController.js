@@ -2,7 +2,7 @@ const Application = require('../models/Application');
 
 const getApplications = async (req, res) => {
   try {
-    const applications = await Application.find();
+    const applications = await Application.find({user: req.user.userId});
     res.json(applications);
   } catch (err) {
     res.status(500).json({
@@ -13,7 +13,8 @@ const getApplications = async (req, res) => {
 
 const createApplication = async (req, res) => {
   try {
-    const application = await Application.create(req.body);
+    const application = await Application.create({...req.body,user: req.user.userId
+});
     res.status(201).json(application);
   } catch (err) {
     res.status(500).json({
@@ -24,7 +25,10 @@ const createApplication = async (req, res) => {
 
 const getApplicationById =  async (req, res) => {
   try {
-    const application = await Application.findById(req.params.id);
+    const application = await Application.findOne({
+      _id: req.params.id,
+      user: req.user.userId
+    });
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
     }
@@ -36,7 +40,10 @@ const getApplicationById =  async (req, res) => {
 
 const updateApplication  =  async (req, res) => {
   try {
-    const application = await Application.findById(req.params.id);
+    const application = await Application.findOne({
+      _id: req.params.id,
+      user: req.user.userId
+    });
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
     }
@@ -53,7 +60,10 @@ const updateApplication  =  async (req, res) => {
 
 const deleteApplication =   async (req, res) => {
   try {
-    const application = await Application.findByIdAndDelete(req.params.id);
+    const application = await Application.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.userId
+    });
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
     }
