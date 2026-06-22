@@ -34,7 +34,6 @@ const getApplicationById =  async (req, res) => {
   }
 };
 
-
 const updateApplication  =  async (req, res) => {
   try {
     const application = await Application.findById(req.params.id);
@@ -51,7 +50,6 @@ const updateApplication  =  async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 const deleteApplication =   async (req, res) => {
   try {

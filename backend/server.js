@@ -4,10 +4,12 @@ const app = express();
 const PORT = 5000;
 
 const applicationRoutes = require("./routes/applicationRoutes");
+const authRoutes = require('./routes/authRoutes');
 
 app.use(express.json());
 
 app.use(applicationRoutes);
+app.use('/api/auth', authRoutes);
 
 mongoose.connect("mongodb://localhost:27017/placementDB")
   .then(() => {
